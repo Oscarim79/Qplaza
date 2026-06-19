@@ -38,15 +38,18 @@ try {
         Write-Host "  $($_.Name)" -ForegroundColor Gray
     }
 
-    # 2. Copiar sitio compilado desde deploy/ (index.html, support.js, assets)
+    # 2. Copiar sitio compilado desde deploy/ (support.js, assets — NO index.html)
     $DeployDir = Join-Path $ExtractRoot "deploy"
-    if (Test-Path $DeployDir) {
-        Copy-Item -Path "$DeployDir\*" -Destination $RepoRoot -Recurse -Force
-        Write-Host "  deploy/ copiado" -ForegroundColor Gray
-    } else {
-        Copy-Item -Path "$ExtractRoot\*" -Destination $RepoRoot -Recurse -Force -Exclude "*.dc.html"
-        Write-Host "  raíz del ZIP copiada" -ForegroundColor Gray
+    $CopySource = if (Test-Path $DeployDir) { $DeployDir } else { $ExtractRoot }
+    Get-ChildItem "$CopySource\*" -Recurse | Where-Object {
+        -not $_.PSIsContainer -and $_.Name -ne "index.html" -and $_.Extension -ne ".dc.html"
+    } | ForEach-Object {
+        $dest = $_.FullName.Replace($CopySource, $RepoRoot)
+        $destDir = Split-Path $dest -Parent
+        if (-not (Test-Path $destDir)) { New-Item -ItemType Directory $destDir | Out-Null }
+        Copy-Item $_.FullName $dest -Force
     }
+    Write-Host "  assets y scripts copiados (index.html preservado)" -ForegroundColor Gray
 
     # Git add + commit + push
     Write-Host "Haciendo push a GitHub..." -ForegroundColor Cyan
