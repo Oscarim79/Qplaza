@@ -27,15 +27,24 @@ try {
 
     # Si el ZIP tiene una subcarpeta raíz, entrar en ella
     $items = Get-ChildItem $TempDir
-    $SourceDir = $TempDir
+    $ExtractRoot = $TempDir
     if ($items.Count -eq 1 -and $items[0].PSIsContainer) {
-        $SourceDir = $items[0].FullName
-        Write-Host "Subcarpeta detectada: $($items[0].Name)" -ForegroundColor Gray
+        $ExtractRoot = $items[0].FullName
     }
 
-    # Copiar archivos al repo (sobreescribe los existentes)
+    # Claude Design pone el sitio real en la subcarpeta "deploy/"
+    $DeployDir = Join-Path $ExtractRoot "deploy"
+    if (Test-Path $DeployDir) {
+        $SourceDir = $DeployDir
+        Write-Host "Usando carpeta deploy/ del ZIP" -ForegroundColor Gray
+    } else {
+        $SourceDir = $ExtractRoot
+        Write-Host "No se encontró deploy/, copiando raíz del ZIP" -ForegroundColor Yellow
+    }
+
+    # Copiar solo los archivos del sitio al repo
     Write-Host "Copiando archivos al repo..." -ForegroundColor Cyan
-    Copy-Item -Path "$SourceDir\*" -Destination $RepoRoot -Recurse -Force -Exclude "deploy.ps1", "CLAUDE.md", ".git"
+    Copy-Item -Path "$SourceDir\*" -Destination $RepoRoot -Recurse -Force
 
     # Git add + commit + push
     Write-Host "Haciendo push a GitHub..." -ForegroundColor Cyan
