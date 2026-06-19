@@ -11,13 +11,11 @@ param(
 
 $RepoRoot = $PSScriptRoot
 
-# Validar que el ZIP existe
 if (-not (Test-Path $ZipPath)) {
     Write-Error "No se encontró el archivo: $ZipPath"
     exit 1
 }
 
-# Carpeta temporal para extraer
 $TempDir = Join-Path $env:TEMP "plaza-deploy-$(Get-Random)"
 New-Item -ItemType Directory -Path $TempDir | Out-Null
 
@@ -32,19 +30,23 @@ try {
         $ExtractRoot = $items[0].FullName
     }
 
-    # Claude Design pone el sitio real en la subcarpeta "deploy/"
-    $DeployDir = Join-Path $ExtractRoot "deploy"
-    if (Test-Path $DeployDir) {
-        $SourceDir = $DeployDir
-        Write-Host "Usando carpeta deploy/ del ZIP" -ForegroundColor Gray
-    } else {
-        $SourceDir = $ExtractRoot
-        Write-Host "No se encontró deploy/, copiando raíz del ZIP" -ForegroundColor Yellow
+    Write-Host "Copiando archivos al repo..." -ForegroundColor Cyan
+
+    # 1. Copiar archivos .dc.html (diseños de opciones) desde la raíz del ZIP
+    Get-ChildItem "$ExtractRoot\*.dc.html" -ErrorAction SilentlyContinue | ForEach-Object {
+        Copy-Item $_.FullName $RepoRoot -Force
+        Write-Host "  $($_.Name)" -ForegroundColor Gray
     }
 
-    # Copiar solo los archivos del sitio al repo
-    Write-Host "Copiando archivos al repo..." -ForegroundColor Cyan
-    Copy-Item -Path "$SourceDir\*" -Destination $RepoRoot -Recurse -Force
+    # 2. Copiar sitio compilado desde deploy/ (index.html, support.js, assets)
+    $DeployDir = Join-Path $ExtractRoot "deploy"
+    if (Test-Path $DeployDir) {
+        Copy-Item -Path "$DeployDir\*" -Destination $RepoRoot -Recurse -Force
+        Write-Host "  deploy/ copiado" -ForegroundColor Gray
+    } else {
+        Copy-Item -Path "$ExtractRoot\*" -Destination $RepoRoot -Recurse -Force -Exclude "*.dc.html"
+        Write-Host "  raíz del ZIP copiada" -ForegroundColor Gray
+    }
 
     # Git add + commit + push
     Write-Host "Haciendo push a GitHub..." -ForegroundColor Cyan
