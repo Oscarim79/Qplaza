@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:#F2EFE8;color:#151515;font-family:"Montserrat",system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  ::selection{background:#151515;color:#F2EFE8}
+  image-slot{display:block}
+  @keyframes qpUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  @keyframes qpMarq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .qp-up{animation:qpUp .8s cubic-bezier(.2,.7,.2,1) both}
+  .qp-link{position:relative;transition:color .25s cubic-bezier(.2,.7,.2,1)}
+  .qp-link::after{content:"";position:absolute;left:0;right:100%;bottom:-4px;height:1px;background:currentColor;transition:right .3s cubic-bezier(.2,.7,.2,1)}
+  .qp-link:hover::after{right:0}
+  .qp-btn{position:relative;overflow:hidden;isolation:isolate;transition:color .3s cubic-bezier(.2,.7,.2,1),border-color .3s}
+  .qp-btn::before{content:"";position:absolute;inset:0;transform:translateY(101%);transition:transform .36s cubic-bezier(.2,.7,.2,1);z-index:-1}
+  .qp-btn-dark::before{background:#C0A063}
+  .qp-btn-dark:hover{color:#151515 !important}
+  .qp-btn-gold::before{background:#151515}
+  .qp-btn-gold:hover{color:#F2EFE8 !important}
+  .qp-btn-ghost{transition:border-color .25s,background .25s,color .25s}
+  .qp-btn-ghost:hover{border-color:#C0A063 !important;color:#C0A063 !important}
+  .qp-card{transition:transform .42s cubic-bezier(.2,.7,.2,1),border-color .42s,box-shadow .42s}
+  .qp-card:hover{transform:translateY(-5px);border-color:#C0A063 !important}
+  .qp-cat{position:relative;overflow:hidden;display:block}
+  .qp-cat-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+  .qp-cat:hover .qp-cat-img{transform:scale(1.06)}
+  .qp-more{opacity:0;transform:translateX(-6px);transition:opacity .35s,transform .35s}
+  .qp-cat:hover .qp-more{opacity:1;transform:none}
+  .qp-tile{position:relative;overflow:hidden;display:block}
+  .qp-tile-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+  .qp-tile:hover .qp-tile-img{transform:scale(1.05)}
+  .qp-menu-link{transition:color .25s,padding-left .25s}
+  .qp-menu-link:hover{color:#C0A063 !important;padding-left:12px}
+  .qp-mbtn{transition:opacity .2s}
+  .qp-mbtn:hover{opacity:.65}
+  .qp-grid{background-image:linear-gradient(rgba(192,160,99,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(192,160,99,.08) 1px,transparent 1px);background-size:52px 52px}
+  .qp-cross{position:absolute;width:20px;height:20px;pointer-events:none;z-index:2}
+  .qp-cross::before,.qp-cross::after{content:"";position:absolute;background:#C0A063}
+  .qp-cross::before{left:50%;top:0;width:1px;height:100%;margin-left:-.5px}
+  .qp-cross::after{top:50%;left:0;height:1px;width:100%;margin-top:-.5px}
+  input::placeholder{color:#A8A296}
+</style>
+</helmet>
+
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#151515"/>
+    <line x1="50" y1="18" x2="50" y2="34" stroke="#C0A063" stroke-width="1"/>
+    <line x1="42" y1="26" x2="58" y2="26" stroke="#C0A063" stroke-width="1"/>
+    <text x="50" y="70" font-family="Playfair Display, Georgia, serif" font-size="46" font-weight="700" fill="#C0A063" text-anchor="middle">Q</text>
+  </svg>
+</template>
+
+<div style="overflow-x:clip">
+
+  <!-- ===================== SELECTOR DE OPCIÓN (flotante) ===================== -->
+  <div style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:4px;background:#151515;border:1px solid rgba(192,160,99,.4);padding:6px;box-shadow:0 18px 44px -16px rgba(0,0,0,.6)">
+    <span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,239,232,.42);padding:0 10px 0 12px">Comparar</span>
+    <sc-for list="{{ opciones }}" as="op" hint-placeholder-count="3">
+      <button onClick="{{ op.onClick }}" style="{{ op.style }}">{{ op.label }}</button>
+    </sc-for>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- ===================== OPCIÓN A — LANDING FUTURISTA ===================== -->
+  <!-- ============================================================= -->
+  <sc-if value="{{ opcion1 }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="Opción A">
+
+  <!-- ===================== NAV ===================== -->
+  <nav style="position:sticky;top:0;z-index:60;background:rgba(242,239,232,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(21,19,16,.12)">
+    <div style="max-width:1280px;margin:0 auto;padding:0 40px;height:70px;display:flex;align-items:center;gap:40px">
+      <a href="#top" style="display:flex;align-items:center;border:none">
+        <img src="assets/qplaza-logo-dark.png" alt="Qplaza Chiquimula" style="height:36px;width:auto;display:block">
+      </a>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:32px">
+        <a href="#concepto" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#151515;border:none">Concepto</a>
+        <a href="#locales" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#151515;border:none">Locales</a>
+        <a href="#amenidades" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#151515;border:none">Amenidades</a>
+        <a href="#galeria" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#151515;border:none">Galería</a>
+      </div>
+      <a href="https://wa.me/50200000000?text=Hola%2C%20me%20interesa%20un%20local%20en%20Qplaza%20Chiquimula" target="_blank" rel="noopener" class="qp-btn qp-btn-dark" style="display:inline-flex;align-items:center;gap:9px;background:#151515;color:#F2EFE8;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:13px 20px;border:1px solid #151515">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+        Quiero un local
+      </a>
+    </div>
+  </nav>
+
+  <span id="top"></span>
+
+  <!-- ===================== HERO A — Inmersivo ===================== -->
+  <sc-if value="{{ showA }}" hint-placeholder-val="{{ true }}">
+  <header style="position:relative;background:#151515;min-height:calc(100vh - 70px);display:flex;align-items:flex-end;overflow:hidden">
+    <image-slot id="qp-hero" src="assets/foto-hero.jpg" fit="cover" shape="rect" placeholder="Arrastra aquí el render principal" style="position:absolute;inset:0;width:100%;height:100%"></image-slot>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,.40) 0%,rgba(21,21,21,.12) 40%,rgba(21,21,21,.90) 100%)"></div>
+    <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+      <div class="qp-grid" style="position:absolute;inset:0;pointer-events:none;opacity:.6"></div>
+      <span class="qp-cross" style="top:26px;left:26px"></span>
+      <span class="qp-cross" style="top:26px;right:26px"></span>
+      <span class="qp-cross" style="bottom:26px;left:26px"></span>
+      <span class="qp-cross" style="bottom:26px;right:26px"></span>
+    </sc-if>
+    <div style="position:relative;width:100%;max-width:1280px;margin:0 auto;padding:0 40px 80px">
+      <div style="max-width:880px" class="qp-up">
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:30px">
+          <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;color:#C0A063">01</span>
+          <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#C0A063">Desarrollo de uso mixto · Chiquimula</span>
+          <span style="flex:1;height:1px;background:rgba(192,160,99,.4);max-width:120px"></span>
+        </div>
+        <h1 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(46px,6.6vw,96px);line-height:1.0;letter-spacing:-.022em;color:#FBFAF6;margin:0;text-wrap:balance">Un lugar para <span style="color:#C0A063">emprender,</span> crecer y convivir.</h1>
+        <p style="font-size:clamp(17px,1.9vw,22px);font-weight:300;line-height:1.6;color:rgba(251,250,246,.84);max-width:600px;margin:30px 0 0;text-wrap:pretty">Arquitectura moderna, seguridad y alta plusvalía en el corazón de Chiquimula. Tu próximo negocio empieza aquí.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:42px">
+          <a href="https://wa.me/50200000000?text=Hola%2C%20me%20interesa%20un%20local%20en%20Qplaza%20Chiquimula" target="_blank" rel="noopener" class="qp-btn qp-btn-gold" style="display:inline-flex;align-items:center;gap:11px;background:#C0A063;color:#151515;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:17px 28px;border:1px solid #C0A063">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+            Reservar por WhatsApp
+          </a>
+          <a href="#concepto" class="qp-btn-ghost" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#FBFAF6;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:17px 26px;border:1px solid rgba(251,250,246,.36)">Conocer el concepto
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- TICKER -->
+  <div style="background:#151515;border-top:1px solid rgba(192,160,99,.28);border-bottom:1px solid rgba(192,160,99,.28);overflow:hidden;padding:13px 0">
+    <div class="qp-marq" style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C0A063">
+      <span style="padding:0 22px">Comercio premium</span><span style="color:rgba(192,160,99,.4)">/</span><span style="padding:0 22px">Gastronomía artesanal</span><span style="color:rgba(192,160,99,.4)">/</span><span style="padding:0 22px">Hospedaje boutique</span><span style="color:rgba(192,160,99,.4)">/</span><span style="padding:0 22px">Seguridad 24/7</span><span style="color:rgba(192,160,99,.4)">/</span><span style="padding:0 22px">Alta plusvalía</span><span style="color:rgba(192,160,99,.4)">/</span>
+      <span style="padding:0 22px">Comercio premium</span><span style="color:rgba(192,160,99,.4)">/</span><span style="padding:0 22px">Gastronomía artesanal</span><span style="color:rgba(192,160,99,.4)">/</span><span style="padding:0 22px">Hospedaje boutique</span><span style="color:rgba(192,160,99,.4)">/</span><span style="padding:0 22px">Seguridad 24/7</span><span style="color:rgba(192,160,99,.4)">/</span><span style="padding:0 22px">Alta plusvalía</span><span style="color:rgba(192,160,99,.4)">/</span>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== HERO B — Editorial dividido ===================== -->
+  <sc-if value="{{ showB }}" hint-placeholder-val="{{ false }}">
+  <header style="background:#FBFAF6;display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 70px)">
+    <div style="position:relative;display:flex;flex-direction:column;justify-content:center;padding:80px clamp(40px,5vw,90px)">
+      <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+        <span class="qp-cross" style="top:30px;left:30px"></span>
+        <span class="qp-cross" style="bottom:30px;left:30px"></span>
+      </sc-if>
+      <div style="position:relative" class="qp-up">
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:28px">
+          <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;color:#A8884E">01</span>
+          <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#A8884E">Desarrollo comercial · Chiquimula</span>
+        </div>
+        <h1 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(44px,4.8vw,80px);line-height:1.02;letter-spacing:-.022em;color:#151515;margin:0;text-wrap:balance">El espacio que tu negocio <span style="color:#C0A063">estaba esperando.</span></h1>
+        <p style="font-size:clamp(17px,1.5vw,20px);font-weight:300;line-height:1.6;color:#4A463F;max-width:480px;margin:28px 0 0">Un desarrollo de arquitectura moderna, seguro y de alta plusvalía. Pensado para emprender y convivir.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:40px">
+          <a href="https://wa.me/50200000000?text=Hola%2C%20me%20interesa%20un%20local%20en%20Qplaza%20Chiquimula" target="_blank" rel="noopener" class="qp-btn qp-btn-dark" style="display:inline-flex;align-items:center;gap:11px;background:#151515;color:#F2EFE8;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:17px 28px;border:1px solid #151515">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+            Reservar por WhatsApp
+          </a>
+          <a href="#locales" class="qp-btn-ghost" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#151515;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:17px 26px;border:1px solid rgba(21,19,16,.28)">Ver locales
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <image-slot id="qp-hero-b" src="assets/foto-hero.jpg" fit="cover" shape="rect" placeholder="Arrastra aquí el render principal" style="width:100%;height:100%;min-height:380px"></image-slot>
+  </header>
+  </sc-if>
+
+  <!-- ===================== CONCEPTO ===================== -->
+  <section id="concepto" style="background:#F2EFE8;padding:clamp(80px,11vw,140px) 0">
+    <div style="max-width:1280px;margin:0 auto;padding:0 40px">
+      <div style="display:flex;align-items:center;gap:18px;margin-bottom:48px">
+        <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;color:#A8884E">02</span>
+        <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#A8884E">El concepto</span>
+        <span style="flex:1;height:1px;background:rgba(21,19,16,.14)"></span>
+      </div>
+      <div style="max-width:820px">
+        <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(34px,4.4vw,60px);line-height:1.06;letter-spacing:-.016em;color:#151515;margin:0;text-wrap:balance">Más que locales: una experiencia que la gente querrá visitar.</h2>
+        <p style="font-size:18px;font-weight:300;line-height:1.7;color:#4A463F;margin:26px 0 0;max-width:680px;text-wrap:pretty">Qplaza Chiquimula reúne comercio, gastronomía y servicios en un solo lugar diseñado para el encuentro. Cada detalle —desde la arquitectura hasta la iluminación— está pensado para que tu marca se vea bien y tus clientes quieran quedarse.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(21,19,16,.14);margin-top:64px;border:1px solid rgba(21,19,16,.14)">
+        <div style="background:#FBFAF6;padding:46px 38px;position:relative">
+          <span style="position:absolute;top:22px;right:24px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;color:rgba(21,19,16,.28)">01</span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:24px;color:#151515;margin:24px 0 10px">Arquitectura moderna</h3>
+          <p style="font-size:15px;font-weight:300;line-height:1.65;color:#4A463F;margin:0">Espacios amplios, líneas limpias y materiales nobles que elevan la imagen de cualquier negocio.</p>
+        </div>
+        <div style="background:#FBFAF6;padding:46px 38px;position:relative">
+          <span style="position:absolute;top:22px;right:24px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;color:rgba(21,19,16,.28)">02</span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 21a8 8 0 0 0-12 0"/><circle cx="12" cy="11" r="4"/><path d="M3 18a9 9 0 0 1 18 0"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:24px;color:#151515;margin:24px 0 10px">Hecho para convivir</h3>
+          <p style="font-size:15px;font-weight:300;line-height:1.65;color:#4A463F;margin:0">Plazas, terrazas y áreas comunes donde la gente se reúne, vuelve y recomienda.</p>
+        </div>
+        <div style="background:#FBFAF6;padding:46px 38px;position:relative">
+          <span style="position:absolute;top:22px;right:24px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;color:rgba(21,19,16,.28)">03</span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:24px;color:#151515;margin:24px 0 10px">Alta plusvalía</h3>
+          <p style="font-size:15px;font-weight:300;line-height:1.65;color:#4A463F;margin:0">Ubicación estratégica y un desarrollo que crece en valor: una decisión inteligente para tu inversión.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== LOCALES ===================== -->
+  <section id="locales" style="background:#151515;padding:clamp(80px,11vw,140px) 0;position:relative;overflow:hidden">
+    <div class="qp-grid" style="position:absolute;inset:0;pointer-events:none;opacity:.5"></div>
+    <div style="position:relative;max-width:1280px;margin:0 auto;padding:0 40px">
+      <div style="display:flex;align-items:center;gap:18px;margin-bottom:48px">
+        <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;color:#C0A063">03</span>
+        <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#C0A063">Espacios disponibles</span>
+        <span style="flex:1;height:1px;background:rgba(192,160,99,.3)"></span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px">
+        <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(34px,4.4vw,60px);line-height:1.06;letter-spacing:-.016em;color:#FBFAF6;margin:0;max-width:680px;text-wrap:balance">Encuentra el local ideal para tu marca.</h2>
+        <p style="font-size:16px;font-weight:300;line-height:1.65;color:rgba(251,250,246,.66);max-width:340px;margin:0">Formatos flexibles que se adaptan a tu giro de negocio. Reserva temprano y elige la mejor ubicación.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:60px">
+        <div class="qp-card" style="background:#1C1C1C;border:1px solid rgba(192,160,99,.24);padding:32px 28px;display:flex;flex-direction:column;min-height:308px;position:relative">
+          <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(192,160,99,.45)">L—01</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M2 7h20"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#FBFAF6;margin:22px 0 8px">Locales comerciales</h3>
+          <p style="font-size:14px;font-weight:300;line-height:1.6;color:rgba(251,250,246,.62);margin:0 0 20px">Retail, boutiques y tiendas con vitrina hacia el flujo principal.</p>
+          <span style="margin-top:auto;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C0A063;border:1px solid rgba(192,160,99,.4);padding:7px 11px"><span style="width:6px;height:6px;background:#C0A063"></span>Disponible</span>
+        </div>
+        <div class="qp-card" style="background:#1C1C1C;border:1px solid rgba(192,160,99,.24);padding:32px 28px;display:flex;flex-direction:column;min-height:308px;position:relative">
+          <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(192,160,99,.45)">L—02</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#FBFAF6;margin:22px 0 8px">Gastronomía</h3>
+          <p style="font-size:14px;font-weight:300;line-height:1.6;color:rgba(251,250,246,.62);margin:0 0 20px">Restaurantes y cafés con terraza, listos para instalación de cocina.</p>
+          <span style="margin-top:auto;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C0A063;border:1px solid rgba(192,160,99,.4);padding:7px 11px"><span style="width:6px;height:6px;background:#C0A063"></span>Pocas unidades</span>
+        </div>
+        <div class="qp-card" style="background:#1C1C1C;border:1px solid rgba(192,160,99,.24);padding:32px 28px;display:flex;flex-direction:column;min-height:308px;position:relative">
+          <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(192,160,99,.45)">L—03</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#FBFAF6;margin:22px 0 8px">Servicios & oficinas</h3>
+          <p style="font-size:14px;font-weight:300;line-height:1.6;color:rgba(251,250,246,.62);margin:0 0 20px">Espacios privados para clínicas, despachos y servicios profesionales.</p>
+          <span style="margin-top:auto;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C0A063;border:1px solid rgba(192,160,99,.4);padding:7px 11px"><span style="width:6px;height:6px;background:#C0A063"></span>Disponible</span>
+        </div>
+        <div class="qp-card" style="background:#1C1C1C;border:1px solid rgba(192,160,99,.24);padding:32px 28px;display:flex;flex-direction:column;min-height:308px;position:relative">
+          <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(192,160,99,.45)">L—04</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/><path d="M12 3v6"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#FBFAF6;margin:22px 0 8px">Islas & kioscos</h3>
+          <p style="font-size:14px;font-weight:300;line-height:1.6;color:rgba(251,250,246,.62);margin:0 0 20px">Formatos compactos en zonas de paso para marcas que inician.</p>
+          <span style="margin-top:auto;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C0A063;border:1px solid rgba(192,160,99,.4);padding:7px 11px"><span style="width:6px;height:6px;background:#C0A063"></span>Disponible</span>
+        </div>
+      </div>
+
+      <div style="margin-top:48px;display:flex;justify-content:center">
+        <a href="https://wa.me/50200000000?text=Hola%2C%20quiero%20conocer%20la%20disponibilidad%20de%20locales%20en%20Qplaza%20Chiquimula" target="_blank" rel="noopener" class="qp-btn qp-btn-gold" style="display:inline-flex;align-items:center;gap:11px;background:#C0A063;color:#151515;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:17px 30px;border:1px solid #C0A063">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+          Consultar disponibilidad
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== AMENIDADES ===================== -->
+  <section id="amenidades" style="background:#FBFAF6;padding:clamp(80px,11vw,140px) 0">
+    <div style="max-width:1280px;margin:0 auto;padding:0 40px">
+      <div style="max-width:760px;margin:0 auto;text-align:center">
+        <div style="display:inline-flex;align-items:center;gap:16px;margin-bottom:26px">
+          <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;color:#A8884E">04</span>
+          <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#A8884E">Amenidades & seguridad</span>
+        </div>
+        <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(34px,4.4vw,60px);line-height:1.06;letter-spacing:-.016em;color:#151515;margin:0;text-wrap:balance">Todo lo que tu negocio y tus clientes necesitan.</h2>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:64px">
+        <div class="qp-card" style="background:#fff;border:1px solid rgba(21,19,16,.12);padding:38px 34px;position:relative">
+          <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(21,19,16,.26)">A—01</span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#151515;margin:20px 0 8px">Seguridad 24/7</h3>
+          <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:#4A463F;margin:0">Personal y monitoreo permanente para que operes con tranquilidad.</p>
+        </div>
+        <div class="qp-card" style="background:#fff;border:1px solid rgba(21,19,16,.12);padding:38px 34px;position:relative">
+          <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(21,19,16,.26)">A—02</span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#151515;margin:20px 0 8px">Videovigilancia CCTV</h3>
+          <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:#4A463F;margin:0">Cobertura completa de accesos, pasillos y áreas comunes.</p>
+        </div>
+        <div class="qp-card" style="background:#fff;border:1px solid rgba(21,19,16,.12);padding:38px 34px;position:relative">
+          <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(21,19,16,.26)">A—03</span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#151515;margin:20px 0 8px">Parqueo amplio</h3>
+          <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:#4A463F;margin:0">Estacionamiento cómodo y seguro para tus clientes y colaboradores.</p>
+        </div>
+        <div class="qp-card" style="background:#fff;border:1px solid rgba(21,19,16,.12);padding:38px 34px;position:relative">
+          <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(21,19,16,.26)">A—04</span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 11v5a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v2H6v-2a2 2 0 0 0-4 0Z"/><path d="M4 18v2"/><path d="M20 18v2"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#151515;margin:20px 0 8px">Áreas comunes</h3>
+          <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:#4A463F;margin:0">Plazas y terrazas para descansar, esperar y disfrutar el lugar.</p>
+        </div>
+        <div class="qp-card" style="background:#fff;border:1px solid rgba(21,19,16,.12);padding:38px 34px;position:relative">
+          <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(21,19,16,.26)">A—05</span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.86a10 10 0 0 1 14 0"/><path d="M8.5 16.43a5 5 0 0 1 7 0"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#151515;margin:20px 0 8px">Conectividad</h3>
+          <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:#4A463F;margin:0">Infraestructura lista para internet de alta velocidad en cada local.</p>
+        </div>
+        <div class="qp-card" style="background:#fff;border:1px solid rgba(21,19,16,.12);padding:38px 34px;position:relative">
+          <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(21,19,16,.26)">A—06</span>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z"/><circle cx="16.5" cy="7.5" r=".5" fill="#C0A063"/></svg>
+          <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#151515;margin:20px 0 8px">Accesos controlados</h3>
+          <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:#4A463F;margin:0">Ingresos definidos y bien iluminados que ordenan el flujo de visitantes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GALERÍA ===================== -->
+  <section id="galeria" style="background:#F2EFE8;padding:clamp(80px,11vw,140px) 0">
+    <div style="max-width:1280px;margin:0 auto;padding:0 40px">
+      <div style="display:flex;align-items:center;gap:18px;margin-bottom:40px">
+        <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;color:#A8884E">05</span>
+        <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#A8884E">Galería · renders</span>
+        <span style="flex:1;height:1px;background:rgba(21,19,16,.14)"></span>
+      </div>
+      <div style="max-width:680px">
+        <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(34px,4.4vw,60px);line-height:1.06;letter-spacing:-.016em;color:#151515;margin:0;text-wrap:balance">Imagina tu negocio aquí.</h2>
+        <p style="font-size:16px;font-weight:300;line-height:1.65;color:#4A463F;margin:22px 0 0;max-width:520px">Un vistazo al carácter del proyecto. Arrastra los renders finales sobre cada espacio para personalizar esta galería.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:200px;gap:14px;margin-top:56px">
+        <image-slot id="qp-g1" src="assets/foto-domo.jpg" fit="cover" shape="rect" placeholder="R-01 · fachada" style="grid-column:span 4;grid-row:span 2;width:100%;height:100%"></image-slot>
+        <image-slot id="qp-g2" src="assets/foto-corredor.jpg" fit="cover" shape="rect" placeholder="R-02 · plaza" style="grid-column:span 2;width:100%;height:100%"></image-slot>
+        <image-slot id="qp-g3" src="assets/foto-plaza.jpg" fit="cover" shape="rect" placeholder="R-03 · interior" style="grid-column:span 2;width:100%;height:100%"></image-slot>
+        <image-slot id="qp-g4" src="assets/foto-atrio.jpg" fit="cover" shape="rect" placeholder="R-04 · local" style="grid-column:span 3;width:100%;height:100%"></image-slot>
+        <image-slot id="qp-g5" src="assets/foto-hero.jpg" fit="cover" shape="rect" placeholder="R-05 · terraza" style="grid-column:span 3;width:100%;height:100%"></image-slot>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CTA FINAL ===================== -->
+  <section style="background:#151515;padding:clamp(90px,12vw,150px) 0;position:relative;overflow:hidden">
+    <div class="qp-grid" style="position:absolute;inset:0;pointer-events:none;opacity:.4"></div>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:.06">
+      <img src="assets/qplaza-q-gold.png" alt="" style="height:78%;width:auto">
+    </div>
+    <div style="position:relative;max-width:840px;margin:0 auto;padding:0 40px;text-align:center">
+      <div style="display:inline-flex;align-items:center;gap:16px;margin-bottom:28px">
+        <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#C0A063">06 · Reserva anticipada</span>
+      </div>
+      <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(38px,5.2vw,74px);line-height:1.02;letter-spacing:-.018em;color:#FBFAF6;margin:0;text-wrap:balance">Asegura tu espacio en <span style="color:#C0A063">Qplaza.</span></h2>
+      <p style="font-size:clamp(17px,1.9vw,21px);font-weight:300;line-height:1.6;color:rgba(251,250,246,.78);margin:24px auto 0;max-width:560px">Las mejores ubicaciones se reservan primero. Escríbenos y un asesor te acompaña en cada paso.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:44px">
+        <a href="https://wa.me/50200000000?text=Hola%2C%20quiero%20reservar%20un%20local%20en%20Qplaza%20Chiquimula" target="_blank" rel="noopener" class="qp-btn qp-btn-gold" style="display:inline-flex;align-items:center;gap:11px;background:#C0A063;color:#151515;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:18px 32px;border:1px solid #C0A063">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+          Escríbenos por WhatsApp
+        </a>
+      </div>
+      <p style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:rgba(251,250,246,.5);margin:28px 0 0">Chiquimula, Guatemala · Lun a Sáb</p>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer style="background:#101010;border-top:1px solid rgba(192,160,99,.2);padding:54px 0 42px">
+    <div style="max-width:1280px;margin:0 auto;padding:0 40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px">
+      <img src="assets/qplaza-logo-cream.png" alt="Qplaza Chiquimula" style="height:40px;width:auto">
+      <div style="display:flex;align-items:center;gap:28px">
+        <a href="#concepto" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(251,250,246,.7);border:none">Concepto</a>
+        <a href="#locales" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(251,250,246,.7);border:none">Locales</a>
+        <a href="#galeria" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(251,250,246,.7);border:none">Galería</a>
+        <a href="https://wa.me/50200000000" target="_blank" rel="noopener" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C0A063;border:none">WhatsApp</a>
+      </div>
+    </div>
+    <div style="max-width:1280px;margin:34px auto 0;padding:24px 40px 0;border-top:1px solid rgba(251,250,246,.1)">
+      <p style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:rgba(251,250,246,.42);margin:0">© 2026 Qplaza Chiquimula · Desarrollo comercial · Chiquimula, Guatemala.</p>
+    </div>
+  </footer>
+  </div>
+  </sc-if>
+
+  <!-- ============================================================= -->
+  <!-- ===================== OPCIÓN B — MALL / CATEGORÍAS ===================== -->
+  <!-- ============================================================= -->
+  <sc-if value="{{ opcion2 }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Opción B" style="background:#F2EFE8">
+
+    <!-- TOP BAR -->
+    <div style="position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:16px clamp(22px,4vw,52px);background:rgba(242,239,232,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(21,19,16,.12)">
+      <img src="assets/qplaza-logo-dark.png" alt="Qplaza Chiquimula" style="height:34px;width:auto;display:block">
+      <div style="display:flex;align-items:center;gap:18px">
+        <a href="https://wa.me/50200000000?text=Hola%2C%20me%20interesa%20un%20local%20en%20Qplaza%20Chiquimula" target="_blank" rel="noopener" class="qp-btn qp-btn-dark" style="display:inline-flex;align-items:center;gap:9px;background:#151515;color:#F2EFE8;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:11px 18px;border:1px solid #151515">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+          WhatsApp
+        </a>
+        <button onClick="{{ toggleMenu }}" class="qp-mbtn" style="display:inline-flex;align-items:center;gap:11px;background:transparent;border:none;cursor:pointer;color:#151515;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:6px 2px">
+          Menú
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 6h18"/><path d="M3 12h18"/><path d="M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- MENU OVERLAY -->
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position:fixed;inset:0;z-index:140;background:#151515;display:flex;flex-direction:column;overflow:hidden">
+        <div class="qp-grid" style="position:absolute;inset:0;pointer-events:none;opacity:.5"></div>
+        <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:18px clamp(22px,4vw,52px)">
+          <img src="assets/qplaza-logo-cream.png" alt="Qplaza" style="height:34px;width:auto">
+          <button onClick="{{ closeMenu }}" class="qp-mbtn" style="background:transparent;border:none;cursor:pointer;color:#FBFAF6;display:inline-flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Cerrar
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div style="position:relative;flex:1;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center;padding:0 clamp(22px,6vw,90px) 60px">
+          <nav style="display:flex;flex-direction:column;gap:4px">
+            <a href="#o2-top" onClick="{{ closeMenu }}" class="qp-menu-link" style="font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,62px);font-weight:500;color:#FBFAF6;border:none;line-height:1.16">Inicio</a>
+            <a href="#o2-ofrece" onClick="{{ closeMenu }}" class="qp-menu-link" style="font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,62px);font-weight:500;color:#FBFAF6;border:none;line-height:1.16">Lo que ofrece</a>
+            <a href="#o2-espacios" onClick="{{ closeMenu }}" class="qp-menu-link" style="font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,62px);font-weight:500;color:#FBFAF6;border:none;line-height:1.16">Espacios</a>
+            <a href="#o2-gastro" onClick="{{ closeMenu }}" class="qp-menu-link" style="font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,62px);font-weight:500;color:#FBFAF6;border:none;line-height:1.16">Gastronomía</a>
+            <a href="#o2-contacto" onClick="{{ closeMenu }}" class="qp-menu-link" style="font-family:'Playfair Display',serif;font-size:clamp(34px,5vw,62px);font-weight:500;color:#FBFAF6;border:none;line-height:1.16">Contacto</a>
+          </nav>
+          <div style="border-left:1px solid rgba(192,160,99,.3);padding-left:40px;display:flex;flex-direction:column;gap:30px">
+            <div>
+              <p style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C0A063;margin:0 0 10px">Dirección</p>
+              <p style="font-family:'Playfair Display',serif;font-size:19px;color:rgba(251,250,246,.9);margin:0;line-height:1.5">Chiquimula,<br>Guatemala</p>
+            </div>
+            <div>
+              <p style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C0A063;margin:0 0 10px">Contacto</p>
+              <a href="https://wa.me/50200000000" target="_blank" rel="noopener" style="font-family:'Playfair Display',serif;font-size:19px;color:#C0A063;border:none">+502 0000 0000</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- HERO -->
+    <header id="o2-top" style="position:relative;min-height:calc(100vh - 66px);display:flex;align-items:center;justify-content:center;overflow:hidden;background:#151515">
+      <image-slot id="qp2-hero" src="assets/foto-hero.jpg" fit="cover" shape="rect" placeholder="Arrastra el render principal" style="position:absolute;inset:0;width:100%;height:100%"></image-slot>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,.5) 0%,rgba(21,21,21,.2) 45%,rgba(21,21,21,.82) 100%)"></div>
+      <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+        <div class="qp-grid" style="position:absolute;inset:0;pointer-events:none;opacity:.6"></div>
+        <span class="qp-cross" style="top:26px;left:26px"></span>
+        <span class="qp-cross" style="top:26px;right:26px"></span>
+        <span class="qp-cross" style="bottom:26px;left:26px"></span>
+        <span class="qp-cross" style="bottom:26px;right:26px"></span>
+      </sc-if>
+      <div style="position:relative;text-align:center;padding:0 24px;max-width:920px" class="qp-up">
+        <p style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#C0A063;margin:0 0 30px">[ Chiquimula · Guatemala ]</p>
+        <img src="assets/qplaza-logo-cream.png" alt="Qplaza Chiquimula" style="height:clamp(82px,12vw,140px);width:auto;margin:0 auto">
+        <p style="font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(22px,3vw,38px);line-height:1.25;color:#FBFAF6;margin:36px 0 0">El lugar que lo tiene todo.</p>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:52px">
+          <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(251,250,246,.66)">Descubre Qplaza</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- INTRO -->
+    <section id="o2-ofrece" style="background:#F2EFE8;padding:clamp(84px,11vw,140px) 0">
+      <div style="max-width:840px;margin:0 auto;padding:0 32px;text-align:center">
+        <p style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#A8884E;margin:0 0 24px">01 · Todo a pocos pasos de distancia</p>
+        <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(32px,4.6vw,62px);line-height:1.06;letter-spacing:-.016em;color:#151515;margin:0;text-wrap:balance">Conoce todo lo que Qplaza tiene para ofrecer.</h2>
+        <p style="font-size:18px;font-weight:300;line-height:1.7;color:#4A463F;margin:26px auto 0;max-width:600px">Comercio, gastronomía, servicios y entretenimiento conviven en un solo lugar diseñado para el encuentro — pensado para que tu negocio crezca y la gente quiera volver.</p>
+      </div>
+    </section>
+
+    <!-- CATEGORÍAS -->
+    <section style="background:#F2EFE8;padding:0 0 clamp(84px,11vw,140px)">
+      <div style="max-width:1320px;margin:0 auto;padding:0 clamp(22px,4vw,48px)">
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px">
+          <a href="https://wa.me/50200000000?text=Hola%2C%20me%20interesa%20un%20local%20comercial%20en%20Qplaza" target="_blank" rel="noopener" class="qp-cat" style="grid-column:span 4;min-height:380px">
+            <div class="qp-cat-img" style="background-image:url('assets/foto-plaza.jpg')"></div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,.05) 30%,rgba(21,21,21,.82) 100%)"></div>
+            <span style="position:absolute;top:24px;left:28px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#C0A063">[ 01 ]</span>
+            <div style="position:absolute;left:0;bottom:0;padding:34px 36px">
+              <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:30px;color:#FBFAF6;margin:0">Comercio</h3>
+              <p style="font-size:14.5px;font-weight:300;line-height:1.55;color:rgba(251,250,246,.82);margin:8px 0 0;max-width:380px">Compra, pasea y sorpréndete. Cada visita se convierte en una experiencia.</p>
+              <span class="qp-more" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C0A063">Conocer más
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+          <a href="https://wa.me/50200000000?text=Hola%2C%20me%20interesa%20un%20local%20gastron%C3%B3mico%20en%20Qplaza" target="_blank" rel="noopener" class="qp-cat" style="grid-column:span 2;min-height:380px">
+            <div class="qp-cat-img" style="background-image:url('assets/foto-corredor.jpg')"></div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,.05) 30%,rgba(21,21,21,.82) 100%)"></div>
+            <span style="position:absolute;top:24px;left:24px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#C0A063">[ 02 ]</span>
+            <div style="position:absolute;left:0;bottom:0;padding:34px 30px">
+              <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:30px;color:#FBFAF6;margin:0">Gastronomía</h3>
+              <p style="font-size:14.5px;font-weight:300;line-height:1.55;color:rgba(251,250,246,.82);margin:8px 0 0">Sabores que despiertan los sentidos.</p>
+              <span class="qp-more" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C0A063">Conocer más
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+          <a href="https://wa.me/50200000000?text=Hola%2C%20me%20interesa%20entretenimiento%20en%20Qplaza" target="_blank" rel="noopener" class="qp-cat" style="grid-column:span 2;min-height:340px">
+            <div class="qp-cat-img" style="background-image:url('assets/foto-atrio.jpg')"></div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,.05) 30%,rgba(21,21,21,.82) 100%)"></div>
+            <span style="position:absolute;top:22px;left:24px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#C0A063">[ 03 ]</span>
+            <div style="position:absolute;left:0;bottom:0;padding:30px">
+              <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:28px;color:#FBFAF6;margin:0">Entretenimiento</h3>
+              <p style="font-size:14px;font-weight:300;line-height:1.55;color:rgba(251,250,246,.82);margin:8px 0 0">Sin límites para toda la familia.</p>
+              <span class="qp-more" style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C0A063">Conocer más
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+          <a href="https://wa.me/50200000000?text=Hola%2C%20me%20interesa%20una%20oficina%20o%20servicio%20en%20Qplaza" target="_blank" rel="noopener" class="qp-cat" style="grid-column:span 2;min-height:340px">
+            <div class="qp-cat-img" style="background-image:url('assets/foto-domo.jpg')"></div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,.05) 30%,rgba(21,21,21,.82) 100%)"></div>
+            <span style="position:absolute;top:22px;left:24px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#C0A063">[ 04 ]</span>
+            <div style="position:absolute;left:0;bottom:0;padding:30px">
+              <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:28px;color:#FBFAF6;margin:0">Servicios</h3>
+              <p style="font-size:14px;font-weight:300;line-height:1.55;color:rgba(251,250,246,.82);margin:8px 0 0">Todo lo que necesitas, al alcance.</p>
+              <span class="qp-more" style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C0A063">Conocer más
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+          <a href="https://wa.me/50200000000?text=Hola%2C%20quiero%20conocer%20Qplaza%20Chiquimula" target="_blank" rel="noopener" class="qp-cat" style="grid-column:span 2;min-height:340px">
+            <div class="qp-cat-img" style="background-image:url('assets/foto-hero.jpg')"></div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,.05) 30%,rgba(21,21,21,.82) 100%)"></div>
+            <span style="position:absolute;top:22px;left:24px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#C0A063">[ 05 ]</span>
+            <div style="position:absolute;left:0;bottom:0;padding:30px">
+              <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:28px;color:#FBFAF6;margin:0">Vida & comunidad</h3>
+              <p style="font-size:14px;font-weight:300;line-height:1.55;color:rgba(251,250,246,.82);margin:8px 0 0">Un entorno pensado para convivir.</p>
+              <span class="qp-more" style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#C0A063">Conocer más
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESPACIOS QUE DAN VIDA -->
+    <section id="o2-espacios" style="background:#151515;padding:clamp(84px,11vw,140px) 0;position:relative;overflow:hidden">
+      <div class="qp-grid" style="position:absolute;inset:0;pointer-events:none;opacity:.4"></div>
+      <div style="position:relative;max-width:1320px;margin:0 auto;padding:0 clamp(22px,4vw,48px)">
+        <div style="text-align:center;max-width:680px;margin:0 auto">
+          <p style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#C0A063;margin:0 0 22px">02 · Nuestros espacios</p>
+          <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(32px,4.6vw,62px);line-height:1.06;letter-spacing:-.016em;color:#FBFAF6;margin:0;text-wrap:balance">Espacios que dan vida.</h2>
+          <p style="font-size:16px;font-weight:300;line-height:1.65;color:rgba(251,250,246,.66);margin:22px auto 0;max-width:520px">Cada espacio tiene su propia identidad — descubre los lugares que conforman Qplaza Chiquimula.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:60px">
+          <div class="qp-tile" style="min-height:440px">
+            <div class="qp-tile-img" style="background-image:url('assets/foto-hero.jpg')"></div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,0) 50%,rgba(21,21,21,.8) 100%)"></div>
+            <span style="position:absolute;left:24px;top:22px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#C0A063">E—01</span>
+            <span style="position:absolute;left:24px;bottom:24px;font-family:'Playfair Display',serif;font-size:22px;color:#FBFAF6">Plaza central</span>
+          </div>
+          <div class="qp-tile" style="min-height:440px">
+            <div class="qp-tile-img" style="background-image:url('assets/foto-corredor.jpg')"></div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,0) 50%,rgba(21,21,21,.8) 100%)"></div>
+            <span style="position:absolute;left:24px;top:22px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#C0A063">E—02</span>
+            <span style="position:absolute;left:24px;bottom:24px;font-family:'Playfair Display',serif;font-size:22px;color:#FBFAF6">Paseo comercial</span>
+          </div>
+          <div class="qp-tile" style="min-height:440px">
+            <div class="qp-tile-img" style="background-image:url('assets/foto-atrio.jpg')"></div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,0) 50%,rgba(21,21,21,.8) 100%)"></div>
+            <span style="position:absolute;left:24px;top:22px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#C0A063">E—03</span>
+            <span style="position:absolute;left:24px;bottom:24px;font-family:'Playfair Display',serif;font-size:22px;color:#FBFAF6">Atrio jardín</span>
+          </div>
+          <div class="qp-tile" style="min-height:440px">
+            <div class="qp-tile-img" style="background-image:url('assets/foto-plaza.jpg')"></div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,21,21,0) 50%,rgba(21,21,21,.8) 100%)"></div>
+            <span style="position:absolute;left:24px;top:22px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#C0A063">E—04</span>
+            <span style="position:absolute;left:24px;bottom:24px;font-family:'Playfair Display',serif;font-size:22px;color:#FBFAF6">Terraza gastronómica</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURE GASTRONÓMICO (split) -->
+    <section id="o2-gastro" style="background:#FBFAF6;display:grid;grid-template-columns:1fr 1fr;align-items:stretch">
+      <image-slot id="qp2-gastro" src="assets/foto-domo.jpg" fit="cover" shape="rect" placeholder="Render zona gastronómica" style="width:100%;height:100%;min-height:520px"></image-slot>
+      <div style="display:flex;flex-direction:column;justify-content:center;padding:clamp(56px,7vw,110px) clamp(32px,5vw,90px)">
+        <p style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#A8884E;margin:0 0 22px">03 · Mercado gastronómico</p>
+        <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(32px,3.8vw,54px);line-height:1.06;letter-spacing:-.016em;color:#151515;margin:0;text-wrap:balance">Un espacio único para emprendedores del sabor.</h2>
+        <p style="font-size:17px;font-weight:300;line-height:1.7;color:#4A463F;margin:24px 0 0;max-width:460px">Una variedad de conceptos culinarios donde se encuentran desde los sabores tradicionales hasta las propuestas más modernas. El lugar ideal para lanzar tu marca gastronómica.</p>
+        <div style="margin-top:34px">
+          <a href="https://wa.me/50200000000?text=Hola%2C%20me%20interesa%20un%20espacio%20gastron%C3%B3mico%20en%20Qplaza" target="_blank" rel="noopener" class="qp-btn qp-btn-dark" style="display:inline-flex;align-items:center;gap:11px;background:#151515;color:#F2EFE8;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:16px 28px;border:1px solid #151515">
+            Conocer más
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section id="o2-contacto" style="background:#151515;padding:clamp(90px,12vw,150px) 0;position:relative;overflow:hidden">
+      <div class="qp-grid" style="position:absolute;inset:0;pointer-events:none;opacity:.4"></div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:.06">
+        <img src="assets/qplaza-q-gold.png" alt="" style="height:78%;width:auto">
+      </div>
+      <div style="position:relative;max-width:840px;margin:0 auto;padding:0 32px;text-align:center">
+        <p style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#C0A063;margin:0 0 26px">04 · Reserva anticipada</p>
+        <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(36px,5.2vw,72px);line-height:1.03;letter-spacing:-.018em;color:#FBFAF6;margin:0;text-wrap:balance">Tu lugar en la ciudad que lo tiene todo.</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:42px">
+          <a href="https://wa.me/50200000000?text=Hola%2C%20quiero%20reservar%20un%20local%20en%20Qplaza%20Chiquimula" target="_blank" rel="noopener" class="qp-btn qp-btn-gold" style="display:inline-flex;align-items:center;gap:11px;background:#C0A063;color:#151515;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:18px 32px;border:1px solid #C0A063">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+            Escríbenos por WhatsApp
+          </a>
+        </div>
+        <p style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:rgba(251,250,246,.5);margin:26px 0 0">Chiquimula, Guatemala · Lun a Sáb</p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="background:#101010;border-top:1px solid rgba(192,160,99,.2);padding:58px 0 42px">
+      <div style="max-width:1320px;margin:0 auto;padding:0 clamp(22px,4vw,48px);display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px">
+        <div>
+          <img src="assets/qplaza-logo-cream.png" alt="Qplaza Chiquimula" style="height:44px;width:auto">
+          <p style="font-size:14px;font-weight:300;line-height:1.6;color:rgba(251,250,246,.55);margin:22px 0 0;max-width:260px">Desarrollo comercial en Chiquimula. El lugar para emprender, crecer y convivir.</p>
+        </div>
+        <div>
+          <p style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C0A063;margin:0 0 16px">Secciones</p>
+          <div style="display:flex;flex-direction:column;gap:11px">
+            <a href="#o2-ofrece" class="qp-link" style="font-size:14px;color:rgba(251,250,246,.7);border:none">Lo que ofrece</a>
+            <a href="#o2-espacios" class="qp-link" style="font-size:14px;color:rgba(251,250,246,.7);border:none">Espacios</a>
+            <a href="#o2-gastro" class="qp-link" style="font-size:14px;color:rgba(251,250,246,.7);border:none">Gastronomía</a>
+          </div>
+        </div>
+        <div>
+          <p style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C0A063;margin:0 0 16px">Contacto</p>
+          <div style="display:flex;flex-direction:column;gap:11px">
+            <span style="font-size:14px;color:rgba(251,250,246,.7)">Chiquimula, Guatemala</span>
+            <a href="https://wa.me/50200000000" target="_blank" rel="noopener" class="qp-link" style="font-size:14px;color:#C0A063;border:none;font-weight:600">WhatsApp · +502 0000 0000</a>
+          </div>
+        </div>
+      </div>
+      <div style="max-width:1320px;margin:40px auto 0;padding:24px clamp(22px,4vw,48px) 0;border-top:1px solid rgba(251,250,246,.1)">
+        <p style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:rgba(251,250,246,.42);margin:0">© 2026 Qplaza Chiquimula · Desarrollo comercial · Chiquimula, Guatemala.</p>
+      </div>
+    </footer>
+
+  </div>
+  </sc-if>
+
+  <!-- ============================================================= -->
+  <!-- ===================== OPCIÓN C — B2B / INVERSIÓN ===================== -->
+  <!-- ============================================================= -->
+  <sc-if value="{{ opcion3 }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Opción C" style="background:#151515">
+
+    <!-- TOP BAR -->
+    <div style="position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:40px;padding:16px clamp(22px,4vw,56px);background:rgba(21,21,21,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(192,160,99,.18)">
+      <img src="assets/qplaza-logo-cream.png" alt="Qplaza Chiquimula" style="height:36px;width:auto;display:block">
+      <div style="margin-left:auto;display:flex;align-items:center;gap:30px">
+        <a href="#c-ventaja" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#F2EFE8;border:none">Ventaja</a>
+        <a href="#c-mercado" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#F2EFE8;border:none">Mercado</a>
+        <a href="#c-plan" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#F2EFE8;border:none">Plan maestro</a>
+        <a href="#c-form" class="qp-link" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#F2EFE8;border:none">Contacto</a>
+      </div>
+      <a href="#c-form" class="qp-btn qp-btn-gold" style="display:inline-flex;align-items:center;gap:9px;background:#C0A063;color:#151515;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:12px 20px;border:1px solid #C0A063">Solicitar dossier</a>
+    </div>
+
+    <!-- HERO -->
+    <header style="position:relative;min-height:calc(100vh - 66px);display:flex;align-items:center;overflow:hidden">
+      <image-slot id="qp3-hero" src="assets/foto-hero.jpg" fit="cover" shape="rect" placeholder="Render hora dorada" style="position:absolute;inset:0;width:100%;height:100%"></image-slot>
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(21,21,21,.95) 0%,rgba(21,21,21,.8) 42%,rgba(21,21,21,.5) 100%)"></div>
+      <sc-if value="{{ showGrid }}" hint-placeholder-val="{{ true }}">
+        <div class="qp-grid" style="position:absolute;inset:0;pointer-events:none;opacity:.5"></div>
+        <span class="qp-cross" style="top:26px;left:26px"></span>
+        <span class="qp-cross" style="bottom:26px;left:26px"></span>
+      </sc-if>
+      <div style="position:relative;width:100%;max-width:1280px;margin:0 auto;padding:0 clamp(22px,4vw,56px)">
+        <div style="max-width:780px" class="qp-up">
+          <div style="display:flex;align-items:center;gap:18px;margin-bottom:30px">
+            <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;color:#C0A063">00</span>
+            <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#C0A063">Oportunidad comercial · Chiquimula</span>
+          </div>
+          <h1 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(42px,5.8vw,84px);line-height:1.02;letter-spacing:-.02em;color:#FFFFFF;margin:0;text-wrap:balance">Redefiniendo el pulso comercial de <span style="color:#C0A063">Oriente.</span></h1>
+          <p style="font-size:clamp(16px,1.5vw,19px);font-weight:300;line-height:1.65;color:rgba(255,255,255,.78);max-width:600px;margin:28px 0 0">Posiciona tu marca en Qplaza Chiquimula. Un desarrollo de uso mixto que fusiona comercio premium, gastronomía artesanal y hospedaje boutique bajo un estándar de calidad global.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:40px">
+            <a href="#c-form" class="qp-btn qp-btn-gold" style="display:inline-flex;align-items:center;gap:11px;background:#C0A063;color:#151515;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:17px 28px;border:1px solid #C0A063">Solicitar dossier comercial
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a href="#c-form" class="qp-btn-ghost" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#FFFFFF;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:17px 26px;border:1px solid rgba(255,255,255,.32)">Agendar presentación</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- VENTAJA COMPETITIVA / 24-7 -->
+    <section id="c-ventaja" style="background:#151515;padding:clamp(80px,11vw,140px) 0;border-top:1px solid rgba(192,160,99,.16)">
+      <div style="max-width:1280px;margin:0 auto;padding:0 clamp(22px,4vw,56px)">
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:44px">
+          <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;color:#C0A063">01</span>
+          <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#C0A063">La ventaja competitiva</span>
+          <span style="flex:1;height:1px;background:rgba(192,160,99,.28)"></span>
+        </div>
+        <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(32px,4.4vw,58px);line-height:1.06;letter-spacing:-.016em;color:#FFFFFF;margin:0;max-width:760px;text-wrap:balance">Más que una plaza, un ecosistema activo 24/7.</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:60px">
+          <div class="qp-card" style="border:1px solid rgba(192,160,99,.2);padding:40px 34px;background:#1C1C1C;position:relative">
+            <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(192,160,99,.45)">01</span>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M2 7h20"/></svg>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:23px;color:#FFFFFF;margin:22px 0 10px">Comercio premium</h3>
+            <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.62);margin:0">Locales con vitrina hacia el flujo principal, pensados para marcas que buscan presencia y prestigio.</p>
+          </div>
+          <div class="qp-card" style="border:1px solid rgba(192,160,99,.2);padding:40px 34px;background:#1C1C1C;position:relative">
+            <span style="position:absolute;top:24px;right:26px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:rgba(192,160,99,.45)">02</span>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:23px;color:#FFFFFF;margin:22px 0 10px">Gastronomía artesanal</h3>
+            <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.62);margin:0">Conceptos culinarios con terraza que convierten la visita en una experiencia que se repite.</p>
+          </div>
+          <div style="border:1px solid #C0A063;padding:40px 34px;background:linear-gradient(180deg,#241F16 0%,#1A1814 100%);position:relative">
+            <span style="position:absolute;top:18px;right:18px;font-family:'Space Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#151515;background:#C0A063;padding:5px 9px">Diferenciador</span>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C0A063" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:23px;color:#FFFFFF;margin:22px 0 10px">Hospedaje boutique</h3>
+            <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.74);margin:0"><strong style="color:#C0A063;font-weight:700">14 estancias boutique</strong> integradas garantizan un flujo de personas constante y vida las 24 horas del día.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTELIGENCIA DE MERCADO -->
+    <section id="c-mercado" style="background:#101010;padding:clamp(80px,11vw,140px) 0">
+      <div style="max-width:1280px;margin:0 auto;padding:0 clamp(22px,4vw,56px)">
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:44px">
+          <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;color:#C0A063">02</span>
+          <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#C0A063">Inteligencia de mercado</span>
+          <span style="flex:1;height:1px;background:rgba(192,160,99,.28)"></span>
+        </div>
+        <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(32px,4.4vw,58px);line-height:1.06;letter-spacing:-.016em;color:#FFFFFF;margin:0;max-width:720px;text-wrap:balance">El epicentro económico regional.</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(192,160,99,.2);margin-top:56px;border:1px solid rgba(192,160,99,.2)">
+          <div style="background:#101010;padding:44px 36px">
+            <span style="font-family:'Space Mono',monospace;font-size:34px;font-weight:700;color:#C0A063">01</span>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#FFFFFF;margin:18px 0 10px">Núcleo de comercialización</h3>
+            <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.62);margin:0">Chiquimula es el centro de abastecimiento y comercio de toda la región oriental de Guatemala.</p>
+          </div>
+          <div style="background:#101010;padding:44px 36px">
+            <span style="font-family:'Space Mono',monospace;font-size:34px;font-weight:700;color:#C0A063">02</span>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#FFFFFF;margin:18px 0 10px">Crecimiento sostenido</h3>
+            <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.62);margin:0">Uno de los crecimientos económicos y demográficos más altos del oriente del país.</p>
+          </div>
+          <div style="background:#101010;padding:44px 36px">
+            <span style="font-family:'Space Mono',monospace;font-size:34px;font-weight:700;color:#C0A063">03</span>
+            <h3 style="font-family:'Playfair Display',serif;font-weight:600;font-size:21px;color:#FFFFFF;margin:18px 0 10px">Turismo e inversión</h3>
+            <p style="font-size:14.5px;font-weight:300;line-height:1.6;color:rgba(255,255,255,.62);margin:0">Un paso estratégico que atrae visitantes e inversión, reforzando la viabilidad de cada marca.</p>
+          </div>
+        </div>
+        <p style="font-family:'Space Mono',monospace;font-size:11.5px;color:rgba(255,255,255,.34);margin:20px 0 0;letter-spacing:.04em">Indicadores cualitativos. Las cifras oficiales se incluyen en el dossier comercial.</p>
+      </div>
+    </section>
+
+    <!-- MASTERPLAN INTERACTIVO -->
+    <section id="c-plan" style="background:#151515;padding:clamp(80px,11vw,140px) 0;border-top:1px solid rgba(192,160,99,.16)">
+      <div style="max-width:1280px;margin:0 auto;padding:0 clamp(22px,4vw,56px)">
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:36px">
+          <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.1em;color:#C0A063">03</span>
+          <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#C0A063">Plan maestro</span>
+          <span style="flex:1;height:1px;background:rgba(192,160,99,.28)"></span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:28px">
+          <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(32px,4.4vw,58px);line-height:1.06;letter-spacing:-.016em;color:#FFFFFF;margin:0;max-width:620px;text-wrap:balance">Encuentra tu ubicación.</h2>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">
+            <sc-for list="{{ filtros }}" as="f" hint-placeholder-count="4">
+              <button onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="margin-top:44px;background:#1A1A1A;border:1px solid rgba(192,160,99,.2);padding:clamp(20px,3vw,40px)">
+          <div style="position:relative;width:100%;height:0;padding-bottom:54%;background:repeating-linear-gradient(0deg,transparent,transparent 38px,rgba(192,160,99,.06) 38px,rgba(192,160,99,.06) 39px),repeating-linear-gradient(90deg,transparent,transparent 38px,rgba(192,160,99,.06) 38px,rgba(192,160,99,.06) 39px)">
+            <div style="position:absolute;left:23%;top:27%;width:53%;height:49%;border:1px dashed rgba(192,160,99,.3);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px">
+              <span style="font-family:'Playfair Display',serif;font-size:clamp(16px,2vw,26px);color:rgba(251,250,246,.55)">Plaza central</span>
+              <span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(192,160,99,.55)">Áreas comunes · jardín</span>
+            </div>
+            <sc-for list="{{ units }}" as="unit" hint-placeholder-count="15">
+              <div style="{{ unit.style }}">
+                <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.02em;color:{{ unit.numColor }}">{{ unit.num }}</span>
+                <span style="font-family:'Space Mono',monospace;font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:{{ unit.estadoColor }}">{{ unit.estadoLabel }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;gap:24px;margin-top:28px;padding-top:24px;border-top:1px solid rgba(192,160,99,.16)">
+            <span style="display:inline-flex;align-items:center;gap:9px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.04em;color:rgba(255,255,255,.7)"><span style="width:16px;height:16px;background:#F2EBDD;border:1.5px solid #C0A063"></span>Disponible</span>
+            <span style="display:inline-flex;align-items:center;gap:9px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.04em;color:rgba(255,255,255,.7)"><span style="width:16px;height:16px;background:#2A2620;border:1.5px solid rgba(192,160,99,.3)"></span>Reservado</span>
+            <span style="margin-left:auto;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.04em;color:rgba(255,255,255,.45)">Plan esquemático · referencial</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMULARIO DE CAPTACIÓN -->
+    <section id="c-form" style="background:#FBFAF6;padding:clamp(80px,11vw,140px) 0">
+      <div style="max-width:680px;margin:0 auto;padding:0 32px">
+        <div style="text-align:center">
+          <p style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#A8884E;margin:0 0 22px">04 · Reserva anticipada</p>
+          <h2 style="font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(32px,4.2vw,54px);line-height:1.06;letter-spacing:-.016em;color:#151515;margin:0;text-wrap:balance">Asegura el espacio ideal para tu marca.</h2>
+          <p style="font-size:16px;font-weight:300;line-height:1.65;color:#4A463F;margin:20px auto 0;max-width:480px">Déjanos tus datos y un asesor comercial te contactará con la disponibilidad y el dossier completo.</p>
+        </div>
+        <form onSubmit="{{ submitForm }}" style="margin-top:48px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <label style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8175">Nombre</label>
+              <input name="nombre" type="text" placeholder="Tu nombre" style="font-family:'Montserrat',sans-serif;font-size:15px;color:#151515;padding:14px 16px;border:1px solid #D8D0C4;background:#fff;outline:none">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <label style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8175">Correo corporativo</label>
+              <input name="correo" type="email" placeholder="nombre@empresa.com" style="font-family:'Montserrat',sans-serif;font-size:15px;color:#151515;padding:14px 16px;border:1px solid #D8D0C4;background:#fff;outline:none">
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8175">Empresa / Marca</label>
+            <input name="empresa" type="text" placeholder="Nombre de tu empresa o marca" style="font-family:'Montserrat',sans-serif;font-size:15px;color:#151515;padding:14px 16px;border:1px solid #D8D0C4;background:#fff;outline:none">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8A8175">Giro de negocio</label>
+            <select name="giro" style="font-family:'Montserrat',sans-serif;font-size:15px;color:#151515;padding:14px 16px;border:1px solid #D8D0C4;background:#fff;outline:none;cursor:pointer">
+              <option>Moda y retail</option>
+              <option>Restaurante / Gastronomía</option>
+              <option>Servicios profesionales</option>
+              <option>Salud y belleza</option>
+              <option>Entretenimiento</option>
+              <option>Hospedaje boutique</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <button type="submit" class="qp-btn qp-btn-dark" style="margin-top:10px;display:inline-flex;align-items:center;justify-content:center;gap:11px;background:#151515;color:#F2EFE8;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:18px 28px;border:1px solid #151515;cursor:pointer;width:100%">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+            Consultar disponibilidad de locales
+          </button>
+          <p style="font-family:'Space Mono',monospace;font-size:11px;color:#8A8175;text-align:center;margin:6px 0 0;letter-spacing:.02em">Al enviar, se abrirá WhatsApp con tus datos para agilizar la respuesta.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="background:#101010;border-top:1px solid rgba(192,160,99,.2);padding:46px 0">
+      <div style="max-width:1280px;margin:0 auto;padding:0 clamp(22px,4vw,56px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
+        <img src="assets/qplaza-logo-cream.png" alt="Qplaza Chiquimula" style="height:40px;width:auto">
+        <p style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.05em;color:rgba(255,255,255,.42);margin:0">© 2026 Qplaza Chiquimula · Desarrollo de uso mixto · Chiquimula, Guatemala.</p>
+      </div>
+    </footer>
+
+  </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;opcionInicial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Opción A&quot;,&quot;Opción B&quot;,&quot;Opción C&quot;],&quot;default&quot;:&quot;Opción A&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;heroVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Inmersivo (imagen completa)&quot;,&quot;Editorial (dividido)&quot;],&quot;default&quot;:&quot;Editorial (dividido)&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;gridTecnico&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { opcion: null, menuOpen: false, planFiltro: "todos" };
+
+  submitForm(e) {
+    e.preventDefault();
+    const f = e.target;
+    const txt = "Hola, me interesa arrendar un local en Qplaza Chiquimula.%0A%0A"
+      + "Nombre: " + encodeURIComponent(f.nombre.value || "—") + "%0A"
+      + "Correo: " + encodeURIComponent(f.correo.value || "—") + "%0A"
+      + "Empresa/Marca: " + encodeURIComponent(f.empresa.value || "—") + "%0A"
+      + "Giro de negocio: " + encodeURIComponent(f.giro.value || "—");
+    window.open("https://wa.me/50200000000?text=" + txt, "_blank");
+  }
+
+  renderVals() {
+    const variant = this.props.heroVariant ?? "Inmersivo (imagen completa)";
+    const showA = variant.indexOf("Inmersivo") === 0;
+
+    const chosen = this.state.opcion ?? (this.props.opcionInicial ?? "Opción A");
+    const isB = chosen.indexOf("B") !== -1;
+    const isC = chosen.indexOf("C") !== -1;
+    const isA = !isB && !isC;
+
+    // Selector flotante — rectángulo mono futurista
+    const selBase = "padding:9px 15px;border:none;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s cubic-bezier(.2,.7,.2,1),color .2s cubic-bezier(.2,.7,.2,1)";
+    const selOn = selBase + ";background:#C0A063;color:#151515";
+    const selOff = selBase + ";background:transparent;color:rgba(242,239,232,.62)";
+
+    // ---- Masterplan (Opción C) ----
+    const catColor = { comercio: "#C0A063", gastronomia: "#D8C39A", hospedaje: "#9C7B45" };
+    const base = [
+      { n: "01", x: 5, y: 6, w: 15, h: 17, cat: "comercio", estado: "disponible" },
+      { n: "02", x: 22, y: 6, w: 15, h: 17, cat: "comercio", estado: "reservado" },
+      { n: "03", x: 39, y: 6, w: 15, h: 17, cat: "comercio", estado: "disponible" },
+      { n: "04", x: 56, y: 6, w: 15, h: 17, cat: "gastronomia", estado: "disponible" },
+      { n: "05", x: 73, y: 6, w: 18, h: 17, cat: "gastronomia", estado: "reservado" },
+      { n: "B1", x: 78, y: 27, w: 13, h: 15, cat: "hospedaje", estado: "disponible" },
+      { n: "B2", x: 78, y: 44, w: 13, h: 15, cat: "hospedaje", estado: "disponible" },
+      { n: "B3", x: 78, y: 61, w: 13, h: 15, cat: "hospedaje", estado: "reservado" },
+      { n: "06", x: 73, y: 78, w: 18, h: 16, cat: "comercio", estado: "disponible" },
+      { n: "07", x: 56, y: 78, w: 15, h: 16, cat: "comercio", estado: "disponible" },
+      { n: "08", x: 39, y: 78, w: 15, h: 16, cat: "gastronomia", estado: "reservado" },
+      { n: "09", x: 22, y: 78, w: 15, h: 16, cat: "gastronomia", estado: "disponible" },
+      { n: "10", x: 5, y: 78, w: 15, h: 16, cat: "comercio", estado: "disponible" },
+      { n: "G1", x: 5, y: 44, w: 13, h: 15, cat: "gastronomia", estado: "disponible" },
+      { n: "11", x: 5, y: 27, w: 13, h: 15, cat: "comercio", estado: "reservado" },
+    ];
+    const filtro = this.state.planFiltro || "todos";
+    const units = base.map((u) => {
+      const match = filtro === "todos" || filtro === u.cat;
+      const reserved = u.estado === "reservado";
+      const fill = reserved ? "#2A2620" : "#F2EBDD";
+      const bColor = match ? catColor[u.cat] : "rgba(192,160,99,.22)";
+      const op = match ? 1 : 0.16;
+      const style = "position:absolute;left:" + u.x + "%;top:" + u.y + "%;width:" + u.w + "%;height:" + u.h + "%;background:" + fill + ";border:1.5px solid " + bColor + ";display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;opacity:" + op + ";transition:opacity .3s cubic-bezier(.2,.7,.2,1),border-color .3s cubic-bezier(.2,.7,.2,1)";
+      return {
+        style: style,
+        num: u.n,
+        numColor: reserved ? "rgba(245,240,232,.55)" : "#151515",
+        estadoLabel: reserved ? "Reservado" : "Disponible",
+        estadoColor: reserved ? "rgba(245,240,232,.4)" : "#9C7B45",
+      };
+    });
+    const tabBase = "padding:11px 20px;border:1px solid rgba(192,160,99,.4);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s,border-color .2s";
+    const tab = (k) => tabBase + (filtro === k
+      ? ";background:#C0A063;color:#151515;border-color:#C0A063"
+      : ";background:transparent;color:rgba(245,240,232,.7)");
+
+    const opciones = [
+      { label: "A", onClick: () => this.setState({ opcion: "Opción A", menuOpen: false }), style: isA ? selOn : selOff },
+      { label: "B", onClick: () => this.setState({ opcion: "Opción B", menuOpen: false }), style: isB ? selOn : selOff },
+      { label: "C", onClick: () => this.setState({ opcion: "Opción C", menuOpen: false }), style: isC ? selOn : selOff },
+    ];
+    const filtros = [
+      { label: "Todos", onClick: () => this.setState({ planFiltro: "todos" }), style: tab("todos") },
+      { label: "Comercio", onClick: () => this.setState({ planFiltro: "comercio" }), style: tab("comercio") },
+      { label: "Gastronomía", onClick: () => this.setState({ planFiltro: "gastronomia" }), style: tab("gastronomia") },
+      { label: "Hospedaje", onClick: () => this.setState({ planFiltro: "hospedaje" }), style: tab("hospedaje") },
+    ];
+
+    return {
+      opciones: opciones,
+      filtros: filtros,
+      showA: showA,
+      showB: !showA,
+      showGrid: this.props.gridTecnico ?? true,
+      opcion1: isA,
+      opcion2: isB,
+      opcion3: isC,
+      menuOpen: this.state.menuOpen,
+      toggleMenu: () => this.setState((s) => ({ menuOpen: !s.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen: false }),
+      units: units,
+      submitForm: (e) => this.submitForm(e),
+    };
+  }
+}
+</script>
+</body>
+</html>
